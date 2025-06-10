@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #todoList {
+        border-collapse: collapse;
+        width: 70%;
+        margin: 0 auto;
+      }
+      #todoList th,
+      #todoList td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      #todoList th {
+        background-color: #f0f0f0;
+      }
+      .add-form {
+        width: 70%;
+        margin: 20px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="text-align: center">To-Do List</h2>
+
+    <table id="todoList">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Text</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="listBody">
+        {{rows}}
+      </tbody>
+    </table>
+
+    <div class="add-form">
+      <input type="text" id="newItem" placeholder="Enter new item" />
+      <button onclick="addItem()">Add</button>
+    </div>
+
+    <script>
+      async function addItem() {
+        const text = document.getElementById("newItem").value;
+        await fetch("/addItem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        location.reload();
+      }
+
+      async function deleteItem(id) {
+        await fetch("/deleteItem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+        location.reload();
+      }
+
+      async function editItem(id) {
+        const newText = prompt("Edit item text:");
+        if (newText !== null) {
+          await fetch("/editItem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, text: newText }),
+          });
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
